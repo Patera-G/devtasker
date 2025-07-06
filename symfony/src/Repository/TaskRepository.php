@@ -16,6 +16,35 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findByFilters(array $filters = [], array $sort = []): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        if (!empty($filters['status'])) {
+            $qb->andWhere('t.status = :status')
+                ->setParameter('status', $filters['status']);
+        }
+
+        if (!empty($filters['priority'])) {
+            $qb->andWhere('t.priority = :priority')
+            ->setParameter('priority', $filters['priority']);
+        }
+
+        if (!empty($filters['project_id'])) {
+            $qb->andWhere('t.project = :projectId')
+            ->setParameter('projectId', $filters['project_id']);
+        }
+
+        foreach ($sort as $field => $direction) {
+            if (in_array($field, ['createdAt', "deadline", 'priority']) &&
+                in_array(strtoupper($direction), ['ASC', 'DESC'])) {
+                $qb->addOrderBy('t.' . $field, strtoupper($direction));
+            }
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */

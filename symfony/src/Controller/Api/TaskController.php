@@ -25,9 +25,22 @@ class TaskController extends AbstractController
     ) {}
 
     #[Route('', name: 'list', methods: ['GET'])]
-    public function list(): Response
+    public function list(Request $request): Response
     {
-        $tasks = $this->taskRepository->findAll();
+        $filters = [
+            'status' => $request->query->get('status'),
+            'priority' => $request->query->get('priority'),
+            'project_id' => $request->query->get('project_id'),
+        ];
+
+        $sort = [];
+        $sortField = $request->query->get('sort');
+        $sortOrder = $request->query->get('direction', 'asc');
+        if ($sortField) {
+            $sort[$sortField] = $sortOrder;
+        }
+
+        $tasks = $this->taskRepository->findByFilters($filters, $sort);
         $json = $this->serializer->serialize($tasks, 'json', ['groups' => 'task:read']);
         return new Response($json, 200, ['Content-Type' => 'application/json']);
     }
