@@ -36,7 +36,7 @@ class ProjectController extends AbstractController
     {
         $project = $this->projectRepository->find($id);
         if (!$project) {
-            return $this->json(['error' => 'Project not founnd'], 404);
+            return $this->json(['error' => 'Project not found'], 404);
         }
         $json = $this->serializer->serialize($project, 'json', ['groups' => 'project:read']);
         return new Response($json, 200, ['Content-Type' => 'application/json']);
@@ -55,7 +55,7 @@ class ProjectController extends AbstractController
         $project = new Project();
         $project->setName($dto->name);
         $project->setDescription($dto->description);
-        $project->setDeadline($dto->deadline);
+        $project->setDeadline(new \DateTimeImmutable($dto->deadline));
         $project->setCreatedAt(new \DateTimeImmutable());
 
         $user = $this->getUser();
