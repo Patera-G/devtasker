@@ -17,7 +17,7 @@ async function apiFetch(url, options = {}) {
 
   if (res.status === 401) {
     alert('Session expired. Please log in again.');
-    localStorage.removeItem('token');
+    localStorage.removeItem('jwt_token');
     window.location.href = 'index.html';
     return;
   }
