@@ -40,9 +40,20 @@ class TaskController extends AbstractController
             $sort[$sortField] = $sortOrder;
         }
 
-        $tasks = $this->taskRepository->findByFilters($filters, $sort);
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = min(100, (int) $request->query->get('limit', 10));
+
+        $tasks = $this->taskRepository->findByFilters($filters, $sort, $page, $limit);
+        $total = $this->taskRepository->countByFilters($filters);
+
         $json = $this->serializer->serialize($tasks, 'json', ['groups' => 'task:read']);
-        return new Response($json, 200, ['Content-Type' => 'application/json']);
+        
+        return $this->json([
+            'page' => $page,
+            'limit' => $limit,
+            'total' => $total,
+            'data' => json_decode($json)
+        ]);
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]

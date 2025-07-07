@@ -14,23 +14,23 @@ class Project
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['project:read'])]
+    #[Groups(['project:read', 'task:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false)]
-    #[Groups(['project:read'])]
+    #[Groups(['project:read', 'task:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['project:read'])]
+    #[Groups(['project:read', 'task:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['project:read'])]
+    #[Groups(['project:read', 'task:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups(['project:read'])]
+    #[Groups(['project:read', 'task:read'])]
     private ?\DateTimeImmutable $deadline = null;
 
     #[ORM\ManyToOne(inversedBy: 'projects')]

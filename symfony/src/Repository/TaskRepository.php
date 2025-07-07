@@ -16,7 +16,7 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function findByFilters(array $filters = [], array $sort = []): array
+    public function findByFilters(array $filters = [], array $sort = [], int $page = 1, int $limit = 10): array
     {
         $qb = $this->createQueryBuilder('t');
 
@@ -42,7 +42,34 @@ class TaskRepository extends ServiceEntityRepository
             }
         }
 
+        $offset = ($page - 1) * $limit;
+        $qb->setFirstResult($offset)
+           ->setMaxResults($limit);
+
         return $qb->getQuery()->getResult();
+    }
+
+    public function countByFilters(array $filters = []): int
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('COUNT(t.id)');
+
+        if (!empty($filters['status'])) {
+            $qb->andWhere('t.status = :status')
+                ->setParameter('status', $filters['status']);
+        }
+
+        if (!empty($filters['priority'])) {
+            $qb->andWhere('t.priority = :priority')
+                ->setParameter('priority', $filters['priority']);
+        }
+
+        if (!empty($filters['project_id'])) {
+            $qb->andWhere('t.project_id = :project_id')
+                ->setParameter('project_id', $filters['project_id']);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     //    /**
