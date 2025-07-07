@@ -5,6 +5,27 @@
 </head>
 <body>
   <h2>Tasks</h2>
+
+  <div>
+    <label for="status-filter">Status:</label>
+    <select id="status-filter">
+      <option value="">All</option>
+      <option value="todo">To Do</option>
+      <option value="in-progress">In Progress</option>
+      <option value="done">Done</option>
+    </select>
+
+    <label for="priority-filter">Priority:</label>
+    <select id="priority-filter">
+      <option value="">All</option>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+
+    <button id="filter-btn">Filter</button>
+  </div>
+
   <ul id="task-list"></ul>
 
   <div>
