@@ -52,6 +52,10 @@
         <button id="filter-btn" class="bg-indigo-600 text-white px-5 py-2 rounded hover:bg-indigo-700 transition">
           Filter
         </button>
+        <button onclick="openTaskModal()"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-1">
+          + New Task
+        </button>
       </div>
     </div>
 
@@ -71,6 +75,65 @@
     </div>
 
   </div>
+
+  <!-- Modal Background -->
+  <div id="task-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <!-- Modal Card -->
+    <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg relative">
+      <h2 id="modal-title" class="text-xl font-bold mb-4">Edit Task</h2>
+
+      <form id="task-form" class="space-y-4">
+        <input type="hidden" id="task-id">
+
+        <div>
+          <label for="task-title" class="block text-sm font-semibold text-gray-700 mb-1">Title</label>
+          <input type="text" id="task-title" class="w-full border rounded px-3 py-2" required>
+        </div>
+
+        <div>
+          <label for="task-priority" class="block text-sm font-semibold text-gray-700 mb-1">Priority</label>
+          <select id="task-priority" class="w-full border rounded px-3 py-2">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="task-status" class="block text-sm font-semibold text-gray-700 mb-1">Status</label>
+          <select id="task-status" class="w-full border rounded px-3 py-2">
+            <option value="todo">To Do</option>
+            <option value="in-progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="task-due" class="block text-sm font-semibold text-gray-700 mb-1">Due Date</label>
+          <input type="date" id="task-due" class="w-full border rounded px-3 py-2">
+        </div>
+
+        <div>
+          <label for="task-project" class="block text-sm font-semibold text-gray-700 mb-1">Project</label>
+          <select id="task-project" class="w-full border rounded px-3 py-2" required>
+            <!-- Options will be loaded dynamically -->
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4">
+          <button type="button" id="modal-cancel" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save</button>
+        </div>
+      </form>
+
+      <!-- Spinner -->
+      <div id="loading-spinner-modal" class="flex justify-center my-10 hidden">
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-indigo-500"></div>
+      </div>
+
+    </div>
+  </div>
+
 
   <!-- Scripts -->
   <script src="js/api.js"></script>
