@@ -3,12 +3,18 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const spinner = document.getElementById('loading-spinner');
+
+    spinner.classList.remove('hidden');
+
 
     const res = await fetch('http://localhost:8080/api/login_check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
     });
+
+    spinner.classList.add('hidden');
 
     if (res.ok) {
         const data = await res.json();
