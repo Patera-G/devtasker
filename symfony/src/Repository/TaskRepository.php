@@ -36,9 +36,23 @@ class TaskRepository extends ServiceEntityRepository
         }
 
         foreach ($sort as $field => $direction) {
-            if (in_array($field, ['createdAt', "deadline", 'priority']) &&
-                in_array(strtoupper($direction), ['ASC', 'DESC'])) {
-                $qb->addOrderBy('t.' . $field, strtoupper($direction));
+            $direction = strtoupper($direction);
+            if (!in_array($direction, ['ASC', 'DESC'])) {
+                $direction = 'ASC';
+            }
+
+            if ($field === 'priority') {
+                // Custom CASE order for priority
+                $caseExpr = "CASE t.priority
+                    WHEN 'high' THEN 3
+                    WHEN 'medium' THEN 2
+                    WHEN 'low' THEN 1
+                    ELSE 4
+                END";
+
+                $qb->addOrderBy($caseExpr, $direction);
+            } elseif (in_array($field, ['createdAt', 'deadline'])) {
+                $qb->addOrderBy('t.' . $field, $direction);
             }
         }
 

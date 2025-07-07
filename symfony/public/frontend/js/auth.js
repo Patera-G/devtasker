@@ -15,6 +15,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         localStorage.setItem('jwt_token', data.token);
         window.location.href = 'tasks.html';
     } else {
-        document.getElementById('error').textContent = 'Ivalid credentials.';
+        document.getElementById('error').textContent = 'Invalid credentials.';
     }
 });
