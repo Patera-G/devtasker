@@ -21,12 +21,6 @@ async function loadTasks() {
 
     const res = await apiFetch(`http://localhost:8080/api/tasks?${params.toString()}`);
 
-    if (res.status === 401) {
-        alert('Unauthorized. Please log in again.');
-        window.location.href = 'index.html';
-        return;
-    }
-
     const data = await res.json();
     const list = document.getElementById('task-list');
     list.innerHTML = '';
@@ -50,6 +44,11 @@ async function loadTasks() {
 document.getElementById('filter-btn').addEventListener('click', () => {
     currentPage = 1;
     loadTasks();
+});
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem('jwt_token');
+    window.location.href = 'index.html';
 });
 
 function nextPage() {

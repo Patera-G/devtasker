@@ -1,14 +1,26 @@
-function getToken() {
-    return localStorage.getItem('jwt_token');
-}
-
 async function apiFetch(url, options = {}) {
-    const token = getToken();
-    return fetch(url, {
-        ...options,
-        headers: {
-            ...options.headers,
-            'Authorization': `Bearer ${token}`
-        }
-    });
+  const token = localStorage.getItem('jwt_token');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  if (res.status === 401) {
+    alert('Session expired. Please log in again.');
+    localStorage.removeItem('token');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  return res;
 }
