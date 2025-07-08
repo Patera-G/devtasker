@@ -1,4 +1,4 @@
-async function apiFetch(url, options = {}) {
+export async function apiFetch(url, options = {}) {
   const token = localStorage.getItem('jwt_token');
 
   const headers = {
