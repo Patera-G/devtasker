@@ -1,22 +1,19 @@
-import { setupNavListeners } from './nav.js';
-import { loadTasks, populateProjectFilter, nextPage, prevPage } from './taskUI.js';
+import { nextPage, prevPage, resetPage, getCurrentPage, setupNavListeners } from './nav.js';
+import { loadTasks, populateProjectFilter } from './taskUI.js';
 import { openTaskModal, editTask, deleteTask, loadProjects, handleFormSubmit } from './taskForm.js';
-
-let currentPage = 1;
+import {showSpinner, hideSpinner} from './utils.js'
 
 window.addEventListener('DOMContentLoaded', async () => {
-    const spinner = document.getElementById('loading-spinner');
-    spinner.classList.remove('hidden');
+    showSpinner();
     setupNavListeners();
     await populateProjectFilter();
     await loadProjects();
-    await loadTasks(currentPage);
-    spinner.classList.add('hidden');
+    await loadTasks(getCurrentPage());
 });
 
 document.getElementById('filter-btn').addEventListener('click', () => {
-    currentPage = 1;
-    loadTasks(currentPage);
+    resetPage();
+    loadTasks(getCurrentPage());
 });
 
 document.getElementById('task-form').addEventListener('submit', (e) => {
@@ -30,8 +27,6 @@ document.getElementById('modal-cancel').addEventListener('click', () => {
 
 window.openTaskModal = openTaskModal;
 window.editTask = (id) => editTask(id, openTaskModal);
-window.deleteTask = (id) => deleteTask(id, currentPage, loadTasks);
-window.nextPage = () => loadTasks(++currentPage);
-window.prevPage = () => {
-    if (currentPage > 1) loadTasks(--currentPage);
-};
+window.deleteTask = (id) => deleteTask(id, getCurrentPage(), loadTasks);
+window.nextPage = () => nextPage(loadTasks);
+window.prevPage = () => prevPage(loadTasks);

@@ -1,8 +1,8 @@
 import { apiFetch } from './api.js';
+import { showSpinner, hideSpinner, getSortParams } from './utils.js';
 
 export async function loadTasks(page = 1) {
-    const spinner = document.getElementById('loading-spinner');
-    spinner.classList.remove('hidden');
+    showSpinner();
 
     const status = document.getElementById('status-filter').value;
     const priority = document.getElementById('priority-filter').value;
@@ -26,16 +26,12 @@ export async function loadTasks(page = 1) {
     if (status) params.append('status', status);
     if (priority) params.append('priority', priority);
     if (projectId) params.append('projectId', projectId);
-    if (sortBy) {
-        const [field, dir] = sortBy.split('_');
-        params.append('sort', field);
-        params.append('direction', dir);
-    }
+    getSortParams(sortBy);
 
     const res = await apiFetch(`http://localhost:8080/api/tasks?${params.toString()}`);
     const data = await res.json();
 
-    spinner.classList.add('hidden');
+    hideSpinner();
 
     if (!res.ok) {
         alert('Failed to load tasks');
@@ -96,17 +92,4 @@ export async function populateProjectFilter() {
         option.textContent = project.name;
         select.appendChild(option);
     });
-}
-
-
-export function nextPage() {
-  currentPage++;
-  loadTasks();
-}
-
-export function prevPage() {
-    if (currentPage > 1) {
-        currentPage--;
-        loadTasks();
-    }
 }

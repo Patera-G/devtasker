@@ -1,4 +1,5 @@
 import { apiFetch } from './api.js';
+import {showSpinner, hideSpinner, formatDateToBackend} from './utils.js';
 
 export function openTaskModal(task = null) {
     const modal = document.getElementById('task-modal');
@@ -24,7 +25,6 @@ export function openTaskModal(task = null) {
 
 export async function handleFormSubmit(currentPage, reloadCallback) {
     const form = document.getElementById('task-form');
-    const spinner = document.getElementById('loading-spinner-modal');
 
     const id = form['task-id'].value;
     const task = {
@@ -36,7 +36,7 @@ export async function handleFormSubmit(currentPage, reloadCallback) {
         projectId: parseInt(form['task-project'].value)
     };
 
-    spinner.classList.remove('hidden');
+    showSpinner('loading-spinner-modal');
 
     const url = id
         ? `http://localhost:8080/api/tasks/${id}`
@@ -48,7 +48,7 @@ export async function handleFormSubmit(currentPage, reloadCallback) {
         body: JSON.stringify(task)
     });
 
-    spinner.classList.add('hidden');
+    hideSpinner('loading-spinner-modal');   
 
     if (res.ok) {
         document.getElementById('task-modal').classList.add('hidden');
@@ -59,27 +59,24 @@ export async function handleFormSubmit(currentPage, reloadCallback) {
 }
 
 export async function editTask(id, openModal) {
-    const spinner = document.getElementById('loading-spinner');
-    spinner.classList.remove('hidden');
+    showSpinner();
 
     const res = await apiFetch(`http://localhost:8080/api/tasks/${id}`);
     const task = await res.json();
 
-    spinner.classList.add('hidden');
+    hideSpinner();;
     openModal(task);
 }
 
 export async function deleteTask(id, currentPage, reloadCallback) {
     if (!confirm('Are you sure you want to delete this task?')) return;
-
-    const spinner = document.getElementById('loading-spinner');
-    spinner.classList.remove('hidden');
+    showSpinner();
 
     await apiFetch(`http://localhost:8080/api/tasks/${id}`, {
         method: 'DELETE'
     });
 
-    spinner.classList.add('hidden');
+    hideSpinner();
     reloadCallback(currentPage);
 }
 
@@ -91,10 +88,4 @@ export async function loadProjects() {
     select.innerHTML = projects.data.map(p => `
         <option value="${p.id}">${p.name}</option>
     `).join('');
-}
-
-function formatDateToBackend(value) {
-    if (!value) return null;
-    const date = new Date(value);
-    return date.toISOString().slice(0, 19).replace('T', ' ');
 }

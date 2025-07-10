@@ -1,8 +1,8 @@
 import { apiFetch } from './api.js';
+import { showSpinner, hideSpinner, getSortParams } from './utils.js';
 
 export async function loadProjects(page = 1) {
-    const spinner = document.getElementById('loading-spinner');
-    spinner.classList.remove('hidden');
+    showSpinner();
 
     const sortBy = document.getElementById('sort-by').value;
 
@@ -11,16 +11,12 @@ export async function loadProjects(page = 1) {
         limit: 5
     });
 
-    if (sortBy) {
-        const [field, dir] = sortBy.split('_');
-        params.append('sort', field);
-        params.append('direction', dir);
-    }
+    getSortParams(sortBy);
 
     const res = await apiFetch(`http://localhost:8080/api/projects?${params.toString()}`);
     const data = await res.json();
 
-        spinner.classList.add('hidden');
+     hideSpinner();
 
 
     if (!res.ok) {
@@ -67,16 +63,4 @@ function renderProjects(projects) {
 export function viewTasksByProject(projectId) {
     localStorage.setItem('selectedProjectId', projectId);
     window.location.href = 'tasks.html';
-}
-
-export function nextPage() {
-    currentPage++;
-    loadProjects();
-}
-
-export function prevPage() {
-    if (currentPage > 1) {
-        currentPage--;
-        loadProjects();
-    }
 }

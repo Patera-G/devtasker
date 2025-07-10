@@ -1,25 +1,22 @@
-import { apiFetch } from './api.js';
-import { setupNavListeners } from './nav.js';
-import { loadProjects, viewTasksByProject, nextPage, prevPage } from './projectUI.js';
+import { nextPage, prevPage, resetPage, getCurrentPage,setupNavListeners } from './nav.js';
+import { loadProjects, viewTasksByProject } from './projectUI.js';
 import { openProjectModal, editProject, deleteProject, handleFormSubmit } from './projectForm.js';
-
-let currentPage = 1;
+import {showSpinner, hideSpinner} from './utils.js'
 
 window.addEventListener('DOMContentLoaded', async () => {
-    const spinner = document.getElementById('loading-spinner');
-    spinner.classList.remove('hidden');
+    showSpinner();
     setupNavListeners();
-    loadProjects();
+    await loadProjects();
 });
 
 document.getElementById('filter-btn').addEventListener('click', () => {
-    currentPage = 1;
-    loadProjects(currentPage);
+    resetPage();
+    loadProjects(getCurrentPage());
 });
 
 document.getElementById('project-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    handleFormSubmit(currentPage, loadProjects);
+    handleFormSubmit(getCurrentPage(), loadProjects);
 });
 
 document.getElementById('modal-cancel').addEventListener('click', () => {
@@ -28,9 +25,7 @@ document.getElementById('modal-cancel').addEventListener('click', () => {
 
 window.openProjectModal = openProjectModal;
 window.editProject = (id) => editProject(id, openProjectModal);
-window.deleteProject = (id) => deleteProject(id, currentPage, loadProjects);
+window.deleteProject = (id) => deleteProject(id, getCurrentPage(), loadProjects);
 window.viewTasksByProject = (id) => viewTasksByProject(id);
-window.nextPage = () => loadProjects(++currentPage);
-window.prevPage = () => {
-    if (currentPage > 1) loadProjects(--currentPage);
-};
+window.nextPage = () => nextPage(loadTasks);
+window.prevPage = () => prevPage(loadTasks);
