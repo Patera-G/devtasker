@@ -30,9 +30,9 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('priority', $filters['priority']);
         }
 
-        if (!empty($filters['project_id'])) {
+        if (!empty($filters['projectId'])) {
             $qb->andWhere('t.project = :projectId')
-            ->setParameter('projectId', $filters['project_id']);
+            ->setParameter('projectId', $filters['projectId']);
         }
 
         foreach ($sort as $field => $direction) {
@@ -78,9 +78,9 @@ class TaskRepository extends ServiceEntityRepository
                 ->setParameter('priority', $filters['priority']);
         }
 
-        if (!empty($filters['project_id'])) {
-            $qb->andWhere('t.project_id = :project_id')
-                ->setParameter('project_id', $filters['project_id']);
+        if (!empty($filters['projectId'])) {
+            $qb->andWhere('t.project = :projectId')
+                ->setParameter('projectId', $filters['projectId']);
         }
 
         return (int) $qb->getQuery()->getSingleScalarResult();

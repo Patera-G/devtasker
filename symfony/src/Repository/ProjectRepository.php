@@ -16,6 +16,26 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    public function findByFilters(array $sort = [], int $page = 1, int $limit = 10): array
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        foreach ($sort as $field => $direction) {
+            $direction = strtoupper($direction);
+            if (!in_array($direction, ['ASC', 'DESC'])) {
+                $direction = 'ASC';
+            }
+
+            $qb->addOrderBy('t.' . $field, $direction);
+        }
+
+        $offset = ($page - 1) * $limit;
+        $qb->setFirstResult($offset)
+           ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
     //    /**
     //     * @return Project[] Returns an array of Project objects
     //     */

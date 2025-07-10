@@ -6,7 +6,17 @@ export async function loadTasks(page = 1) {
 
     const status = document.getElementById('status-filter').value;
     const priority = document.getElementById('priority-filter').value;
+    let projectId = document.getElementById('project-filter').value;
     const sortBy = document.getElementById('sort-by').value;
+
+    if (!projectId) {
+        projectId = localStorage.getItem('selectedProjectId');
+        if (projectId) {
+            const projectSelect = document.getElementById('project-filter');
+            if (projectSelect) projectSelect.value = projectId;
+            localStorage.removeItem('selectedProjectId'); // optional
+        }
+    }
 
     const params = new URLSearchParams({
         page,
@@ -15,6 +25,7 @@ export async function loadTasks(page = 1) {
 
     if (status) params.append('status', status);
     if (priority) params.append('priority', priority);
+    if (projectId) params.append('projectId', projectId);
     if (sortBy) {
         const [field, dir] = sortBy.split('_');
         params.append('sort', field);
@@ -70,6 +81,23 @@ function renderTasks(tasks) {
         list.appendChild(li);
     });
 }
+
+export async function populateProjectFilter() {
+    const res = await apiFetch('http://localhost:8080/api/projects');
+    if (!res.ok) return;
+
+    const projects = await res.json();
+    const select = document.getElementById('project-filter');
+    select.innerHTML = `<option value="">All</option>`; // reset with default
+
+    projects.data.forEach(project => {
+        const option = document.createElement('option');
+        option.value = project.id;
+        option.textContent = project.name;
+        select.appendChild(option);
+    });
+}
+
 
 export function nextPage() {
   currentPage++;

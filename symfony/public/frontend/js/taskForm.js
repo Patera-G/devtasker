@@ -88,7 +88,7 @@ export async function loadProjects() {
     const res = await apiFetch('http://localhost:8080/api/projects');
     const projects = await res.json();
 
-    select.innerHTML = projects.map(p => `
+    select.innerHTML = projects.data.map(p => `
         <option value="${p.id}">${p.name}</option>
     `).join('');
 }

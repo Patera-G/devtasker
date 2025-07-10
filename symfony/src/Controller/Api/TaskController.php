@@ -32,7 +32,7 @@ class TaskController extends AbstractController
         $filters = [
             'status' => $request->query->get('status'),
             'priority' => $request->query->get('priority'),
-            'project_id' => $request->query->get('project_id'),
+            'projectId' => $request->query->get('projectId'),
         ];
 
         $sort = [];

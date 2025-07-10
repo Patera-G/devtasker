@@ -1,4 +1,5 @@
-import { loadTasks, nextPage, prevPage } from './taskUI.js';
+import { setupNavListeners } from './nav.js';
+import { loadTasks, populateProjectFilter, nextPage, prevPage } from './taskUI.js';
 import { openTaskModal, editTask, deleteTask, loadProjects, handleFormSubmit } from './taskForm.js';
 
 let currentPage = 1;
@@ -6,6 +7,8 @@ let currentPage = 1;
 window.addEventListener('DOMContentLoaded', async () => {
     const spinner = document.getElementById('loading-spinner');
     spinner.classList.remove('hidden');
+    setupNavListeners();
+    await populateProjectFilter();
     await loadProjects();
     await loadTasks(currentPage);
     spinner.classList.add('hidden');
@@ -14,11 +17,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 document.getElementById('filter-btn').addEventListener('click', () => {
     currentPage = 1;
     loadTasks(currentPage);
-});
-
-document.getElementById('logout-btn').addEventListener('click', () => {
-    localStorage.removeItem('jwt_token');
-    window.location.href = 'index.html';
 });
 
 document.getElementById('task-form').addEventListener('submit', (e) => {

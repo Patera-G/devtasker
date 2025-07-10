@@ -26,11 +26,30 @@ class ProjectController extends AbstractController
     ) {}
 
     #[Route('', name: 'list', methods: ['GET'])]
-    public function list(): Response
+    public function list(Request $request): Response
     {
-        $projects = $this->projectRepository->findAll();
+        $sort = [];
+        $sortField = $request->query->get('sort');
+        $sortOrder = $request->query->get('direction', 'asc');
+
+        if ($sortField) {
+            $sort[$sortField] = $sortOrder;
+        }
+
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = min(100, (int) $request->query->get('limit', 10));
+
+        $total = $this->projectRepository->count([]);
+
+        $projects = $this->projectRepository->findByFilters($sort, $page, $limit);
         $json = $this->serializer->serialize($projects, 'json', ['groups' => 'project:read']);
-        return new Response($json, 200, ['Content-Type' => 'application/json']);
+        
+        return $this->json([
+            'page' => $page,
+            'limit' => $limit,
+            'total' => $total,
+            'data' => json_decode($json)
+        ]);
     }
 
     #[Route('/{id}', name: 'show', methods: ['GET'])]

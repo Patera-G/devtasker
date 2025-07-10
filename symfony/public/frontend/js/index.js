@@ -1,5 +1,15 @@
+import { apiFetch } from './api.js';
+import { setupNavListeners } from './nav.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const error = document.getElementById('error');
+    error.classList.add('hidden');
+    setupNavListeners();
+});
+
 document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    error.classList.add('hidden');
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -22,5 +32,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         window.location.href = 'tasks.html';
     } else {
         document.getElementById('error').textContent = 'Invalid credentials.';
+        error.classList.remove('hidden');
     }
 });
