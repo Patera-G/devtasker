@@ -186,7 +186,7 @@ bin/console doctrine:migrations:migrate
 
 ## 👤 Author
 
-*Jiri Patera**  
+**Jiri Patera**  
 [github.com/Patera-G](https://github.com/Patera-G)
 
 ---
