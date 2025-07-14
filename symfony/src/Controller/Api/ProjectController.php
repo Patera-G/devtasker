@@ -5,6 +5,7 @@ use App\Entity\User;
 use App\Entity\Project;
 use App\DTO\ProjectDTO;
 use App\Repository\ProjectRepository;
+use App\Service\ValidationErrorHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,8 @@ class ProjectController extends AbstractController
         private EntityManagerInterface $em,
         private ProjectRepository $projectRepository,
         private SerializerInterface $serializer,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private ValidationErrorHandler $validationErrorHandler
     ) {}
 
     #[Route('', name: 'list', methods: ['GET'])]
@@ -70,7 +72,7 @@ class ProjectController extends AbstractController
 
         $errors = $this->validator->validate($dto);
         if (count($errors) > 0) {
-            return $this->json($errors, 400);
+            return $this->validationErrorHandler->handle($errors);
         }
 
         $project = new Project();
@@ -90,7 +92,7 @@ class ProjectController extends AbstractController
 
         $errors = $this->validator->validate($project);
         if (count($errors) > 0) {
-            return $this->json($errors, 400);
+            return $this->validationErrorHandler->handle($errors);
         }
 
         $this->em->persist($project);
@@ -126,7 +128,7 @@ class ProjectController extends AbstractController
 
         $errors = $this->validator->validate($project);
         if (count($errors) > 0) {
-            return $this->json($errors, 400);
+            return $this->validationErrorHandler->handle($errors);
         }
 
         $this->em->flush();

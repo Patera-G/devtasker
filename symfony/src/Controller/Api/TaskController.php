@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Entity\Project;
 use App\DTO\TaskDTO;
 use App\Repository\TaskRepository;
+use App\Service\ValidationErrorHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,8 @@ class TaskController extends AbstractController
         private EntityManagerInterface $em,
         private TaskRepository $taskRepository,
         private SerializerInterface $serializer,
-        private ValidatorInterface $validator
+        private ValidatorInterface $validator,
+        private ValidationErrorHandler $validationErrorHandler
     ) {}
 
     #[Route('', name: 'list', methods: ['GET'])]
@@ -77,7 +79,7 @@ class TaskController extends AbstractController
         $errors = $this->validator->validate($dto);
 
         if (count($errors) > 0) {
-            return $this->json($errors, 400);
+            return $this->validationErrorHandler->handle($errors);
         }
 
         $task = new Task();
@@ -103,7 +105,7 @@ class TaskController extends AbstractController
         $errors = $this->validator->validate($dto);
 
         if (count($errors) > 0) {
-            return $this->json($errors, 400);
+            return $this->validationErrorHandler->handle($errors);
         }
 
         $task->setTitle($dto->title);

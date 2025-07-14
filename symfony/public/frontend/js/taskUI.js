@@ -8,6 +8,7 @@ export async function loadTasks(page = 1) {
     const priority = document.getElementById('priority-filter').value;
     let projectId = document.getElementById('project-filter').value;
     const sortBy = document.getElementById('sort-by').value;
+    const { sort, direction } = getSortParams(sortBy);
 
     if (!projectId) {
         projectId = localStorage.getItem('selectedProjectId');
@@ -26,7 +27,8 @@ export async function loadTasks(page = 1) {
     if (status) params.append('status', status);
     if (priority) params.append('priority', priority);
     if (projectId) params.append('projectId', projectId);
-    getSortParams(sortBy);
+    if (sort) params.append('sort', sort);
+    if (direction) params.append('direction', direction);
 
     const res = await apiFetch(`http://localhost:8080/api/tasks?${params.toString()}`);
     const data = await res.json();

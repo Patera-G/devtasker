@@ -5,18 +5,20 @@ export async function loadProjects(page = 1) {
     showSpinner();
 
     const sortBy = document.getElementById('sort-by').value;
+    const { sort, direction } = getSortParams(sortBy);
 
     const params = new URLSearchParams({
         page,
         limit: 5
     });
 
-    getSortParams(sortBy);
+    if (sort) params.append('sort', sort);
+    if (direction) params.append('direction', direction);
 
     const res = await apiFetch(`http://localhost:8080/api/projects?${params.toString()}`);
     const data = await res.json();
 
-     hideSpinner();
+    hideSpinner();
 
 
     if (!res.ok) {
