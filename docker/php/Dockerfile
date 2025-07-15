@@ -17,4 +17,4 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose port 8080
 EXPOSE 8080
 
-CMD ["/usr/bin/supervisord"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
