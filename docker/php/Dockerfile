@@ -10,6 +10,9 @@ WORKDIR /var/www/html
 
 COPY ./symfony /var/www/html
 
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html
+
 COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
