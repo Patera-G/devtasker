@@ -8,5 +8,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY ./symfony /var/www/html
+
+COPY ./docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Expose port 8080
 EXPOSE 8080
+
+CMD ["/usr/bin/supervisord"]
