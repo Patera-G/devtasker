@@ -20,4 +20,7 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose port 8080
 EXPOSE 8080
 
+RUN apt-get install -y tree
+RUN tree -L 3 /var/www/html > /deploy-structure.txt
+
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
